@@ -1,5 +1,21 @@
+# Data of plugin
 name: tphub
 main: dev.zeroproject.Plugin
 version: 0.0.1
-api-version: 1.15
+api-version: 1.19
+author: ZeroProject
 description: A plugin for a minecraft server with spigot, this plugin allows to users to save coordinates and go to these easily
+website: zeroproject.dev
+commands:
+  god:
+    description: Allows to users to be invincible
+    usage: /<command>
+    aliases:
+      - godmode
+
+  th:
+    description: Command to teleport to a saved location
+    usage: /<command> <action> <args>
+    aliases:
+      - tphub
+      - teleporthub
