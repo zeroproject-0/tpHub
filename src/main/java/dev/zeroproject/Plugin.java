@@ -23,7 +23,7 @@ public class Plugin extends JavaPlugin {
     db.load();
 
     // register event listener
-    getServer().getPluginManager().registerEvents(new MenuHandler(), this);
+    getServer().getPluginManager().registerEvents(new MenuHandler(db), this);
 
     // register command
     getCommand("th").setExecutor(new THCommand(db));

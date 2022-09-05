@@ -139,26 +139,35 @@ public class THCommand implements CommandExecutor {
   }
 
   private void showTp() {
-    Inventory mainMenu = Bukkit.createInventory(player, 9, ChatColor.DARK_PURPLE + "Teleports Menu");
+    Inventory mainMenu = Bukkit.createInventory(player, 9 * 6, ChatColor.DARK_PURPLE + "Teleports Menu");
 
-    ItemStack location1 = new ItemStack(Material.GRASS_BLOCK);
+    try {
+      ArrayList<LocationModel> locations = db.getLocations(player.getUniqueId().toString());
 
-    ItemMeta location1Meta = location1.getItemMeta();
-    location1Meta.setDisplayName(ChatColor.GREEN + "Location 1");
+      for (int i = 0; i < locations.size(); i++) {
+        ItemStack item = new ItemStack(Material.COMPASS);
 
-    ArrayList<String> location1Lore = new ArrayList<String>();
-    location1Lore.add(ChatColor.GRAY + "Click to teleport to Location 1");
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(locations.get(i).getName());
+        item.setItemMeta(meta);
+        mainMenu.setItem(i, item);
 
-    location1Meta.setLore(location1Lore);
-    location1.setItemMeta(location1Meta);
+        ArrayList<String> locationLore = new ArrayList<String>();
+        locationLore.add(ChatColor.GRAY + "Click to teleport to " + locations.get(i).getName());
+
+        meta.setLore(locationLore);
+        item.setItemMeta(meta);
+      }
+    } catch (SQLException e) {
+      player.sendMessage(ChatColor.RED + "Error to get locations");
+    }
 
     ItemStack close = new ItemStack(Material.BARRIER);
     ItemMeta closeMeta = close.getItemMeta();
     closeMeta.setDisplayName(ChatColor.RED + "Close");
     close.setItemMeta(closeMeta);
 
-    mainMenu.setItem(0, location1);
-    mainMenu.setItem(8, close);
+    mainMenu.setItem(53, close);
 
     player.openInventory(mainMenu);
   }
