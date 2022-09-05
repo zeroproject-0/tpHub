@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import dev.zeroproject.commands.THCommand;
-import dev.zeroproject.commands.THTabCompletion;
 import dev.zeroproject.events.MenuHandler;
 import dev.zeroproject.utils.SQLite;
 
@@ -30,7 +29,7 @@ public class Plugin extends JavaPlugin {
     getCommand("th").setExecutor(new THCommand(db));
 
     // register tab completer
-    getCommand("th").setTabCompleter(new THTabCompletion(db));
+    getCommand("th").setTabCompleter(new THCommand(db));
   }
 
   public void onDisable() {
