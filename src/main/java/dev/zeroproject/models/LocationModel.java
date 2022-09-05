@@ -36,10 +36,8 @@ public class LocationModel {
     this.pitch = location.getPitch();
   }
 
-  public static Location toLocation(LocationModel locationModel) {
-    return new Location(Bukkit.getWorld(locationModel.getWorld()), locationModel.getX(),
-        locationModel.getY(), locationModel.getZ(), (float) locationModel.getYaw(),
-        (float) locationModel.getPitch());
+  public Location getLocation() {
+    return new Location(Bukkit.getWorld(world), x, y, z, (float) yaw, (float) pitch);
   }
 
   public String getPlayer() {

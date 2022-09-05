@@ -42,40 +42,58 @@ public class THCommand implements CommandExecutor {
       return true;
     }
 
-    switch (args[0].toLowerCase()) {
-      case "help":
-        showHelp();
-        break;
-      case "add":
-        addTp(args[1]);
-        break;
-      case "remove":
-        removeTp(args[1]);
-        break;
-      case "list":
-        showList();
-        break;
-      case "show":
-        showTp();
-        break;
-      case "go":
-        // player.teleport(Location);
-        player.sendMessage("Go to: " + args[1]);
-        break;
+    if (args.length > 2) {
+      sender.sendMessage("Too many arguments! use /th help for more info");
+      return true;
+    }
 
-      default:
-        sender.sendMessage("Use for see all actions: /th help");
-        break;
+    if (args.length == 1) {
+      if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?"))
+        showHelp();
+      else if (args[0].equalsIgnoreCase("list") || args[0].equalsIgnoreCase("l"))
+        showList();
+      else if (args[0].equalsIgnoreCase("show") || args[0].equalsIgnoreCase("s"))
+        showTp();
+      else {
+        sender.sendMessage("Invalid arguments! use /th help for more info");
+      }
+      return true;
+    }
+
+    if (args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("a"))
+      addTp(args[1]);
+    else if (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("r"))
+      removeTp(args[1]);
+    else if (args[0].equalsIgnoreCase("go") || args[0].equalsIgnoreCase("g"))
+      goTp(args[1]);
+    else {
+      sender.sendMessage("Invalid arguments! use /th help for more info");
     }
 
     return true;
   }
 
+  private void goTp(String name) {
+    try {
+      LocationModel location = db.getLocation(name, player.getUniqueId().toString());
+      if (location == null) {
+        player.sendMessage(ChatColor.RED + "Location not found!");
+        return;
+      }
+
+      player.teleport(location.getLocation());
+      player.sendMessage("Teleported to: " + location.getName());
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
   private void showHelp() {
-    player.sendMessage("Usage: /th add <name>");
-    player.sendMessage("Usage: /th remove <name>");
-    player.sendMessage("Usage: /th go <name>");
-    player.sendMessage("Usage: /th list");
+    player.sendMessage("Usage: /th add <name> or /th a <name>");
+    player.sendMessage("Usage: /th remove <name> or /th r <name>");
+    player.sendMessage("Usage: /th go <name> or /th g <name>");
+    player.sendMessage("Usage: /th list or /th l");
+    player.sendMessage("Usage: /th show or /th s");
   }
 
   private void removeTp(String name) {
@@ -97,7 +115,7 @@ public class THCommand implements CommandExecutor {
       player.sendMessage(ChatColor.GREEN + "Location added!");
 
     } catch (SQLException e) {
-      player.sendMessage(ChatColor.RED + "Error to save location please try again!");
+      player.sendMessage(ChatColor.RED + "Error to save location please try with other name!");
     }
   }
 
@@ -109,14 +127,14 @@ public class THCommand implements CommandExecutor {
         return;
       }
 
-      player.sendMessage("List: ");
+      player.sendMessage(ChatColor.GREEN + "Locations: ");
 
       for (int i = 0; i < locations.size(); i++) {
         player.sendMessage((i + 1) + ". " + locations.get(i).getName());
       }
 
     } catch (SQLException e) {
-      player.sendMessage("Error to get locations");
+      player.sendMessage(ChatColor.RED + "Error to get locations");
     }
   }
 

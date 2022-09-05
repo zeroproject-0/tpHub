@@ -30,14 +30,8 @@ public class SQLite extends Database {
       "`z` double NOT NULL," +
       "`yaw` double NOT NULL," +
       "`pitch` double NOT NULL," +
-      "PRIMARY KEY (`name`)" +
+      "PRIMARY KEY (`player`, `name`)" +
       ");";
-
-  // public final String TABLE_PLAYERS = "CREATE TABLE IF NOT EXISTS Players (" +
-  // "`uuid` varchar(36) NOT NULL," +
-  // "`name` varchar(16) NOT NULL," +
-  // "PRIMARY KEY (`uuid`)" +
-  // ");";
 
   public Connection getSQLConnection() {
     if (!plugin.getDataFolder().exists()) {
@@ -80,6 +74,30 @@ public class SQLite extends Database {
     } catch (SQLException e) {
       e.printStackTrace();
     }
+  }
+
+  public LocationModel getLocation(String name, String playerId) throws SQLException {
+    LocationModel location = null;
+    try {
+      ResultSet result = getSQLConnection().createStatement()
+          .executeQuery("SELECT * FROM Locations WHERE name = '" + name + "' AND player = '" + playerId + "';");
+      while (result.next()) {
+        location = new LocationModel(
+            result.getString("player"),
+            result.getString("name"),
+            result.getString("world"),
+            result.getDouble("x"),
+            result.getDouble("y"),
+            result.getDouble("z"),
+            result.getDouble("yaw"),
+            result.getDouble("pitch"));
+      }
+      result.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new SQLException();
+    }
+    return location;
   }
 
   public void addLocation(LocationModel locationModel) throws SQLException {
@@ -171,6 +189,7 @@ public class SQLite extends Database {
 
         tps.add(tp);
       }
+      rs.close();
 
     } catch (SQLException e) {
       e.printStackTrace();
