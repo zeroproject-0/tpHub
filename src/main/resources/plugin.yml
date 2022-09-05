@@ -1,7 +1,7 @@
 # Data of plugin
 name: tphub
 main: dev.zeroproject.Plugin
-version: 0.0.1
+version: '${project.version}'
 api-version: 1.19
 author: ZeroProject
 description: A plugin for a minecraft server with spigot, this plugin allows to users to save coordinates and go to these easily

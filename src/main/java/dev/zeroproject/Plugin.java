@@ -5,7 +5,8 @@ import java.util.logging.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import dev.zeroproject.commands.THCommand;
-import dev.zeroproject.listeners.PlayerListener;
+import dev.zeroproject.events.MenuHandler;
+import dev.zeroproject.utils.SQLite;
 
 /*
  * tphub java plugin
@@ -17,11 +18,15 @@ public class Plugin extends JavaPlugin {
     // Plugin startup logic
     LOGGER.info("tphub enabled");
 
+    // Db
+    SQLite db = new SQLite(this);
+    db.load();
+
     // register event listener
-    getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+    getServer().getPluginManager().registerEvents(new MenuHandler(), this);
 
     // register command
-    getCommand("th").setExecutor(new THCommand());
+    getCommand("th").setExecutor(new THCommand(db));
   }
 
   public void onDisable() {
