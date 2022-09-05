@@ -50,7 +50,7 @@ public class THCommand implements CommandExecutor {
         addTp(args[1]);
         break;
       case "remove":
-        player.sendMessage("Remove tp: " + args[1]);
+        removeTp(args[1]);
         break;
       case "list":
         showList();
@@ -78,10 +78,19 @@ public class THCommand implements CommandExecutor {
     player.sendMessage("Usage: /th list");
   }
 
+  private void removeTp(String name) {
+    try {
+      boolean result = db.removeLocation(name, player.getUniqueId().toString());
+      String message = result ? (ChatColor.GREEN + "Location removed") : (ChatColor.RED + "Location not found");
+      player.sendMessage(message);
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
   private void addTp(String name) {
     LocationModel locationModel = new LocationModel(player.getLocation(), player.getUniqueId().toString(), name);
-
-    player.sendMessage(locationModel.toString());
 
     try {
       db.addLocation(locationModel);
@@ -95,6 +104,11 @@ public class THCommand implements CommandExecutor {
   private void showList() {
     try {
       ArrayList<LocationModel> locations = db.getLocations(player.getUniqueId().toString());
+      if (locations.size() == 0) {
+        player.sendMessage(ChatColor.RED + "You don't have any location saved!");
+        return;
+      }
+
       player.sendMessage("List: ");
 
       for (int i = 0; i < locations.size(); i++) {

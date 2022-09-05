@@ -115,6 +115,35 @@ public class SQLite extends Database {
     }
   }
 
+  public boolean removeLocation(String name, String playerId) throws SQLException {
+    Connection conn = null;
+    Statement s = null;
+    boolean result = false;
+
+    try {
+      conn = getSQLConnection();
+      s = conn.createStatement();
+      int r = s.executeUpdate("DELETE FROM Locations WHERE name = '" + name + "' AND player = '" + playerId + "';");
+
+      result = r > 0;
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new SQLException();
+    } finally {
+      try {
+        if (s != null)
+          s.close();
+        if (conn != null)
+          conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+
+    return result;
+  }
+
   public ArrayList<LocationModel> getLocations(String playerId) throws SQLException {
     ArrayList<LocationModel> tps = null;
 

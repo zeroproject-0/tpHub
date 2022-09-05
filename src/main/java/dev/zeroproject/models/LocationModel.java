@@ -1,5 +1,6 @@
 package dev.zeroproject.models;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 public class LocationModel {
@@ -33,6 +34,12 @@ public class LocationModel {
     this.z = location.getZ();
     this.yaw = location.getYaw();
     this.pitch = location.getPitch();
+  }
+
+  public static Location toLocation(LocationModel locationModel) {
+    return new Location(Bukkit.getWorld(locationModel.getWorld()), locationModel.getX(),
+        locationModel.getY(), locationModel.getZ(), (float) locationModel.getYaw(),
+        (float) locationModel.getPitch());
   }
 
   public String getPlayer() {
