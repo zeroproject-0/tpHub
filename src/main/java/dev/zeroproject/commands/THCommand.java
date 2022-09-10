@@ -190,10 +190,8 @@ public class THCommand implements CommandExecutor, TabCompleter {
     if (args.length == 2) {
       Player player = (Player) sender;
 
-      if (!(args[0].equalsIgnoreCase("add") ||
-          args[0].equalsIgnoreCase("remove") ||
+      if (!(args[0].equalsIgnoreCase("remove") ||
           args[0].equalsIgnoreCase("go") ||
-          args[0].equalsIgnoreCase("a") ||
           args[0].equalsIgnoreCase("r") ||
           args[0].equalsIgnoreCase("g"))) {
         return null;
