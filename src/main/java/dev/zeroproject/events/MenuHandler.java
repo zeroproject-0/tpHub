@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 
 import dev.zeroproject.models.LocationModel;
 import dev.zeroproject.utils.SQLite;
@@ -26,7 +27,13 @@ public class MenuHandler implements Listener {
     final String MENU_NAME = ChatColor.DARK_PURPLE + "Teleports Menu";
 
     if (event.getView().getTitle().equalsIgnoreCase(MENU_NAME)) {
-      switch (event.getCurrentItem().getType()) {
+      ItemStack currentItemStack = event.getCurrentItem();
+
+      if (currentItemStack == null) {
+        return;
+      }
+
+      switch (currentItemStack.getType()) {
         case COMPASS:
           String name = event.getCurrentItem().getItemMeta().getDisplayName();
 
@@ -50,6 +57,7 @@ public class MenuHandler implements Listener {
           break;
       }
 
+      event.setCancelled(true);
       player.closeInventory();
     }
   }
