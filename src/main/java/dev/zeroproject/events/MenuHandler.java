@@ -1,11 +1,13 @@
 package dev.zeroproject.events;
 
 import java.sql.SQLException;
+import java.util.Set;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 import dev.zeroproject.models.LocationModel;
@@ -33,32 +35,35 @@ public class MenuHandler implements Listener {
         return;
       }
 
+      event.setCancelled(true);
+
       switch (currentItemStack.getType()) {
         case COMPASS:
           String name = event.getCurrentItem().getItemMeta().getDisplayName();
 
+          Set<ItemFlag> flags = currentItemStack.getItemMeta().getItemFlags();
+
+          if (!flags.contains(ItemFlag.HIDE_UNBREAKABLE))
+            return;
+
           try {
             LocationModel location = db.getLocation(name, player.getUniqueId().toString());
-            if (location == null) {
-              player.sendMessage(ChatColor.RED + "Location not found!");
-              return;
-            }
 
             player.teleport(location.getLocation());
             player.sendMessage("Teleported to: " + location.getName());
+            player.closeInventory();
           } catch (SQLException e) {
             e.printStackTrace();
           }
           break;
         case BARRIER:
+          player.closeInventory();
           break;
 
         default:
           break;
       }
 
-      event.setCancelled(true);
-      player.closeInventory();
     }
   }
 }

@@ -69,7 +69,6 @@ public class SQLite extends Database {
     try {
       Statement s = connection.createStatement();
       s.executeUpdate(TABLE_LOCATIONS);
-      // s.executeUpdate(TABLE_PLAYERS);
       s.close();
     } catch (SQLException e) {
       e.printStackTrace();
