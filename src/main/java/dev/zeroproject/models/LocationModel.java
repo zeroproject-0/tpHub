@@ -1,5 +1,10 @@
 package dev.zeroproject.models;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+// import java.sql.Date;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
@@ -23,6 +28,21 @@ public class LocationModel {
     this.z = z;
     this.yaw = yaw;
     this.pitch = pitch;
+  }
+
+  public LocationModel(ResultSet rs) {
+    try {
+      this.player = rs.getString("player");
+      this.name = rs.getString("name");
+      this.world = rs.getString("world");
+      this.x = rs.getDouble("x");
+      this.y = rs.getDouble("y");
+      this.z = rs.getDouble("z");
+      this.yaw = rs.getDouble("yaw");
+      this.pitch = rs.getDouble("pitch");
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
   }
 
   public LocationModel(Location location, String player, String name) {

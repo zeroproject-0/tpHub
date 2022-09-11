@@ -30,6 +30,7 @@ public class SQLite extends Database {
       "`z` double NOT NULL," +
       "`yaw` double NOT NULL," +
       "`pitch` double NOT NULL," +
+      "`date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP," +
       "PRIMARY KEY (`player`, `name`)" +
       ");";
 
@@ -79,17 +80,10 @@ public class SQLite extends Database {
     LocationModel location = null;
     try {
       ResultSet result = getSQLConnection().createStatement()
-          .executeQuery("SELECT * FROM Locations WHERE name = '" + name + "' AND player = '" + playerId + "';");
+          .executeQuery(
+              "SELECT * FROM Locations WHERE name = '" + name + "' AND player = '" + playerId + "' ORDER BY date;");
       while (result.next()) {
-        location = new LocationModel(
-            result.getString("player"),
-            result.getString("name"),
-            result.getString("world"),
-            result.getDouble("x"),
-            result.getDouble("y"),
-            result.getDouble("z"),
-            result.getDouble("yaw"),
-            result.getDouble("pitch"));
+        location = new LocationModel(result);
       }
       result.close();
     } catch (SQLException e) {
@@ -107,7 +101,7 @@ public class SQLite extends Database {
       conn = getSQLConnection();
       s = conn.createStatement();
       s.execute(
-          "INSERT INTO Locations (player, name, world, x, y, z, yaw, pitch) VALUES ('"
+          "INSERT INTO Locations (player, name, world, x, y, z, yaw, pitch, date) VALUES ('"
               + locationModel.getPlayer() + "', '"
               + locationModel.getName() + "', '"
               + locationModel.getWorld() + "', '"
@@ -115,7 +109,8 @@ public class SQLite extends Database {
               + locationModel.getY() + "', '"
               + locationModel.getZ() + "', '"
               + locationModel.getYaw() + "', '"
-              + locationModel.getPitch() + "');");
+              + locationModel.getPitch() + "', "
+              + "CURRENT_TIMESTAMP" + ");");
 
     } catch (SQLException e) {
       e.printStackTrace();
@@ -140,7 +135,8 @@ public class SQLite extends Database {
     try {
       conn = getSQLConnection();
       s = conn.createStatement();
-      int r = s.executeUpdate("DELETE FROM Locations WHERE name = '" + name + "' AND player = '" + playerId + "';");
+      int r = s.executeUpdate(
+          "DELETE FROM Locations WHERE name = '" + name + "' AND player = '" + playerId + "';");
 
       result = r > 0;
 
@@ -173,18 +169,10 @@ public class SQLite extends Database {
       conn = getSQLConnection();
       s = conn.createStatement();
 
-      ResultSet rs = s.executeQuery("SELECT * FROM Locations WHERE player='" + playerId + "';");
+      ResultSet rs = s.executeQuery("SELECT * FROM Locations WHERE player='" + playerId + "' ORDER BY date;");
 
       while (rs.next()) {
-        LocationModel tp = new LocationModel(
-            rs.getString("player"),
-            rs.getString("name"),
-            rs.getString("world"),
-            rs.getDouble("x"),
-            rs.getDouble("y"),
-            rs.getDouble("z"),
-            rs.getDouble("yaw"),
-            rs.getDouble("pitch"));
+        LocationModel tp = new LocationModel(rs);
 
         tps.add(tp);
       }
@@ -219,19 +207,12 @@ public class SQLite extends Database {
       conn = getSQLConnection();
       s = conn.createStatement();
 
-      ResultSet rs = s.executeQuery("SELECT * FROM Locations WHERE player='" + playerId + "' LIMIT " + limit
-          + " OFFSET " + limit * pageNumber + ";");
+      ResultSet rs = s
+          .executeQuery("SELECT * FROM Locations WHERE player='" + playerId + "' ORDER BY date LIMIT " + limit
+              + " OFFSET " + limit * pageNumber + ";");
 
       while (rs.next()) {
-        LocationModel tp = new LocationModel(
-            rs.getString("player"),
-            rs.getString("name"),
-            rs.getString("world"),
-            rs.getDouble("x"),
-            rs.getDouble("y"),
-            rs.getDouble("z"),
-            rs.getDouble("yaw"),
-            rs.getDouble("pitch"));
+        LocationModel tp = new LocationModel(rs);
 
         tps.add(tp);
       }
