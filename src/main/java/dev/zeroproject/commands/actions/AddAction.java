@@ -29,7 +29,7 @@ public class AddAction extends ActionAbstract {
   @Override
   public void run(String[] args, Player player, SQLite db) {
     String name = args[1];
-    name = name.replaceAll("[^a-zA-Z0-9]", "");
+    name = name.replaceAll("[^a-zA-Z0-9ñÑ]", "");
 
     LocationModel locationModel = new LocationModel(player.getLocation(), player.getUniqueId().toString(), name);
 
