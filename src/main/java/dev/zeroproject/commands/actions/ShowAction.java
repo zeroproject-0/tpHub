@@ -35,10 +35,12 @@ public class ShowAction extends ActionAbstract {
 
   @Override
   public void run(String[] args, Player player, SQLite db) {
-    Inventory mainMenu = Bukkit.createInventory(player, 9 * 6, ChatColor.DARK_PURPLE + "Teleports Menu");
+    int inventorySize = 9 * 3;
+
+    Inventory mainMenu = Bukkit.createInventory(player, inventorySize, ChatColor.DARK_PURPLE + "Teleports Menu");
 
     try {
-      ArrayList<LocationModel> locations = db.getLocations(player.getUniqueId().toString());
+      ArrayList<LocationModel> locations = db.getLocationPage(player.getUniqueId().toString(), 0, inventorySize - 4);
 
       for (int i = 0; i < locations.size(); i++) {
         ItemStack item = new ItemStack(Material.COMPASS);
@@ -64,7 +66,25 @@ public class ShowAction extends ActionAbstract {
     closeMeta.setDisplayName(ChatColor.RED + "Close");
     close.setItemMeta(closeMeta);
 
-    mainMenu.setItem(53, close);
+    ItemStack next = new ItemStack(Material.WHITE_BANNER);
+    ItemMeta nextMeta = next.getItemMeta();
+    nextMeta.setDisplayName(ChatColor.BLUE + "Next");
+    next.setItemMeta(nextMeta);
+
+    ItemStack previous = new ItemStack(Material.WHITE_BANNER);
+    ItemMeta previousMeta = previous.getItemMeta();
+    previousMeta.setDisplayName(ChatColor.BLUE + "Previous");
+    previous.setItemMeta(previousMeta);
+
+    ItemStack page = new ItemStack(Material.PAPER);
+    ItemMeta pageMeta = page.getItemMeta();
+    pageMeta.setDisplayName(ChatColor.BLUE + "Page 1");
+    page.setItemMeta(pageMeta);
+
+    mainMenu.setItem(mainMenu.getSize() - 1, close);
+    mainMenu.setItem(mainMenu.getSize() - 2, next);
+    mainMenu.setItem(mainMenu.getSize() - 3, page);
+    mainMenu.setItem(mainMenu.getSize() - 4, previous);
 
     player.openInventory(mainMenu);
   }

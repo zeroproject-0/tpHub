@@ -30,7 +30,7 @@ public class ListAction extends ActionAbstract {
   @Override
   public void run(String[] args, Player player, SQLite db) {
     try {
-      ArrayList<LocationModel> locations = db.getLocations(player.getUniqueId().toString());
+      ArrayList<LocationModel> locations = db.getAllLocations(player.getUniqueId().toString());
       if (locations.size() == 0) {
         player.sendMessage(ChatColor.RED + "You don't have any location saved!");
         return;

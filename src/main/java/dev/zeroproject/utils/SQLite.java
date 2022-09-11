@@ -161,7 +161,7 @@ public class SQLite extends Database {
     return result;
   }
 
-  public ArrayList<LocationModel> getLocations(String playerId) throws SQLException {
+  public ArrayList<LocationModel> getAllLocations(String playerId) throws SQLException {
     ArrayList<LocationModel> tps = null;
 
     Connection conn = null;
@@ -174,6 +174,53 @@ public class SQLite extends Database {
       s = conn.createStatement();
 
       ResultSet rs = s.executeQuery("SELECT * FROM Locations WHERE player='" + playerId + "';");
+
+      while (rs.next()) {
+        LocationModel tp = new LocationModel(
+            rs.getString("player"),
+            rs.getString("name"),
+            rs.getString("world"),
+            rs.getDouble("x"),
+            rs.getDouble("y"),
+            rs.getDouble("z"),
+            rs.getDouble("yaw"),
+            rs.getDouble("pitch"));
+
+        tps.add(tp);
+      }
+      rs.close();
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new SQLException();
+    } finally {
+      try {
+        if (s != null)
+          s.close();
+        if (conn != null)
+          conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+
+    return tps;
+  }
+
+  public ArrayList<LocationModel> getLocationPage(String playerId, int pageNumber, int limit) throws SQLException {
+    ArrayList<LocationModel> tps = null;
+
+    Connection conn = null;
+    Statement s = null;
+
+    try {
+      tps = new ArrayList<LocationModel>();
+
+      conn = getSQLConnection();
+      s = conn.createStatement();
+
+      ResultSet rs = s.executeQuery("SELECT * FROM Locations WHERE player='" + playerId + "' LIMIT " + limit
+          + " OFFSET " + limit * pageNumber + ";");
 
       while (rs.next()) {
         LocationModel tp = new LocationModel(

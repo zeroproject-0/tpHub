@@ -84,7 +84,7 @@ public class THCommand implements CommandExecutor, TabCompleter {
       }
 
       try {
-        ArrayList<LocationModel> list = db.getLocations(player.getUniqueId().toString());
+        ArrayList<LocationModel> list = db.getAllLocations(player.getUniqueId().toString());
 
         ArrayList<String> names = new ArrayList<String>();
         for (LocationModel location : list) {
